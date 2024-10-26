@@ -1,0 +1,28 @@
+.floor-lighting {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.content-box {
+    width: 1000px; /* عرض الصندوق */
+    padding: 1000px; /* حواف داخلية أكبر */
+}
+
+.instagram-cylinder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 94, 171, 0.2); /* لون الخلفية */
+    border-radius: 200px; /* يجعل الحدود أسطوانية */
+    padding: 10px 200px; /* مساحة داخلية */
+    margin: 0 auto; /* توسيط العنصر */
+}

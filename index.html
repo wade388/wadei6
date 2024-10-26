@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    .image-hover-effect {
+    transition: transform 0.3s ease; /* تأثير انتقال سلس */
+}
+
+.image-hover-effect:hover {
+    transform: scale(1.1); /* تكبير الصورة بنسبة 10% عند التحويم */
+}
+
+    .floor-lighting {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    .background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      transition: opacity 1s ease; /* تأثير تلاشي */
+    }
+    .content-box {
+      width: 550px; /* زيادة عرض البوكس */
+      padding: 50px; /* زيادة الهوامش */
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.7); /* جعل الظل أحمر */
+      border-radius: 18px; /* إضافة زوايا مدورة */
+      background: rgba(0, 0, 0, 0.7); /* خلفية شفافة جميلة */
+      backdrop-filter: blur(20px); /* تأثير ضبابي */
+      position: relative; /* لضبط موقع الأسطوانات */
+    }
+    .popup {
+      display: none;
+      position: fixed; /* تغيير إلى fixed لتغطية كامل الصفحة */
+      top: 0;
+      left: 0;
+      width: 100%; /* عرض كامل */
+      height: 100%; /* ارتفاع كامل */
+      background-color: rgba(0, 0, 0, 0.5); /* خلفية شفافة */
+      z-index: 10;
+      color: white;
+      text-align: center; /* توسيط النص */
+      padding: 0; /* إزالة الهوامش */
+      justify-content: center; /* توسيط المحتوى عموديًا */
+      align-items: center; /* توسيط المحتوى أفقيًا */
+      display: flex; /* استخدام flexbox لتوسيع المحتوى */
+      backdrop-filter: blur(10px); /* تأثير ضبابي للخلفية */
+      opacity: 1; /* بداية كاملة الرؤية */
+      transition: opacity 0.5s ease; /* تأثير تلاشي */
+    }
+    .popup.hidden {
+      opacity: 0; /* عند إضافة هذه الفئة، ستختفي */
+      pointer-events: none; /* منع التفاعل عندما تكون مخفية */
+    }
+    .click-here {
+      background-color: rgba(255, 0, 0, 0.7); /* خلفية شفافة مضيئة */
+      border: none;
+      border-radius: 20px;
+      padding: 20px 40px; /* زيادة حجم الزر */
+      color: white;
+      font-size: 28px; /* زيادة حجم نص الزر */
+      cursor: pointer; /* تغيير المؤشر عند التحويم */
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.74); /* تأثير ظل مضيء */
+      transition: all 0.3s ease; /* تأثير انتقالي عند التحويم */
+      transform: scale(1); /* بداية حجم الزر */
+    }
+    .click-here:hover {
+      background-color: rgb(255, 0, 0); /* تغيير الخلفية عند التحويم */
+      box-shadow: 0 0 40px rgb(255, 0, 0); /* زيادة تأثير الظل عند التحويم */
+    }
+    .mute-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(255, 0, 0, 0.5); /* خلفية حمراء شفافة */
+      border: none;
+      border-radius: 10px;
+      color: white;
+      padding: 5px; /* زيادة حجم الزر */
+      cursor: pointer;
+      z-index: 20; /* رفع مستوى الزر فوق العناصر الأخرى */
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+      transition: all 0.3s ease; /* تأثير انتقالي */
+    }
+    .mute-button:hover {
+      background-color: rgba(255, 0, 0, 1); /* تغيير الخلفية عند التحويم */
+      box-shadow: 0 0 20px rgba(255, 0, 0, 1); /* زيادة تأثير الظل عند التحويم */
+    }
+    .mute-button i {
+      font-size: 35px; /* زيادة حجم الأيقونة */
+    }
+    .icon-container {
+      display: flex;
+      flex-direction: column; /* تغيير الاتجاه إلى عمودي */
+      align-items: flex-start; /* توسيط العناصر إلى اليسار */
+      margin-top: 10px;
+    }
+    .icon {
+      margin: 10px 0; /* المسافة بين الأيقونات */
+      font-size: 45px; /* حجم الأيقونة */
+      transition: color 0.3s, transform 0.3s; /* تأثير انتقالي عند التحويم */
+      width: 25px; /* عرض ثابت للأيقونة */
+      height: 40px; /* ارتفاع ثابت للأيقونة */
+      display: flex; /* استخدام flexbox */
+      justify-content: center; /* توسيط الأيقونة */
+      align-items: center; /* توسيط الأيقونة */
+    }
+    .icon-instagram {
+      color: rgba(255, 94, 171, 1); /* لون أيقونة إنستغرام */
+    }
+    .icon-discord {
+      color: rgba(88, 101, 242, 1); /* لون أيقونة ديسكورد */
+    }
+    .icon-youtube {
+      color: rgb(255, 0, 0); /* لون أيقونة يوتيوب */
+    }
+    .icon:hover {
+      color: rgb(255, 255, 255); /* تغيير اللون عند التحويم */
+      transform: scale(1.1); /* تكبير الأيقونة عند التحويم */
+      
+    }
+    @keyframes glowing {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.7), 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 0, 0, 1), 0 0 30px rgba(255, 0, 0, 0.5), 0 0 60px rgba(255, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.7), 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+}
+
+.cylinder {
+  width: 270px; /* زيادة عرض الأسطوانة */
+  height: 50px; /* ارتفاع الأسطوانة */
+  background-color: rgb(0, 0, 0); /* لون الأسطوانة */
+  border-radius: 20px; /* جعل الأسطوانة مدورة */
+  margin-left: 65px; /* المسافة بين الأيقونة والأسطوانة */
+  transition: transform 0.3s; /* تأثير التكبير */
+  display: flex; /* استخدام flexbox داخل الأسطوانة */
+  justify-content: center; /* توسيط المحتوى داخل الأسطوانة */
+  align-items: center; /* توسيط المحتوى عموديًا داخل الأسطوانة */
+  position: relative; /* لتحديد موقع النص */
+  animation: glowing 1.5s infinite; /* إضافة تأثير الإضاءة المتحركة */
+}
+
+
+
+.cylinder:hover {
+  background-color: rgba(255, 0, 0, 0.8); /* تغيير لون الخلفية عند التحويم */
+  box-shadow: 0 0 20px rgba(255, 0, 0, 1); /* زيادة ظل الإضاءة عند التحويم */
+  transform: scale(1.05); /* تكبير الأسطوانة قليلاً عند التحويم */
+}
+
+    
+.cylinder-text {
+  position: absolute; /* لجعل النص فوق الأسطوانة */
+  font-size: 16px; /* زيادة حجم نص الأسطوانة */
+  font-weight: bold; /* جعل الخط عريض */
+  z-index: 1; /* رفع مستوى النص فوق الأسطوانة */
+  text-align: center; /* توسيط النص */
+  transition: text-shadow 0.5s; /* تأثير تباين النص */
+  color: white; /* لون النص */
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.4); /* تأثير توهج */
+}
+
+
+
+    
+    .cylinder:nth-child(2) .cylinder-text {
+      color: rgb(255, 255, 255); /* تغيير لون نص الأسطوانة الثانية إلى الأزرق */
+    }
+    .cylinder:nth-child(2) .cylinder-text {
+      color: rgb(255, 0, 0); /* تغيير لون نص الأسطوانة الثانية إلى الأزرق */
+    }
+    .cylinder:nth-child(2) .cylinder-text {
+      color: rgb(255, 255, 255); /* تغيير لون نص الأسطوانة الثانية إلى الأزرق */
+    }
+    .cylinder:hover .cylinder-text {
+      text-shadow: 0 0 10px RED rgba(255, 255, 255, 2); /* تأثير تباين النص عند التحويم */
+    }
+    .icon-cylinder-container {
+      display: flex; /* استخدام flexbox لتوزيع الأيقونات والأسطوانات */
+      align-items: center; /* توسيط العناصر عموديًا */
+      margin: 10px 0; /* المسافة بين الصفوف */
+    }
+  </style>
+</head>
+<body class="bg-cover bg-center h-screen">
+  <video id="backgroundVideo" class="background-video" muted>
+    <source src="wadei.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <audio id="backgroundAudio" loop>
+    <source src="wadei.mp4" type="audio/mpeg">
+    Your browser does not support the audio tag.
+  </audio>
+
+  <!-- نافذة منبثقة -->
+  <div id="popup" class="popup">
+    <div class="text-2xl font-bold mb-4">مرحبًا بك في موقعنا</div>
+    <button id="playSound" class="click-here">Enter</button>
+  </div>
+
+  <!-- زر إيقاف الصوت -->
+  <button id="muteButton" class="mute-button">
+    <i class="fas fa-volume-up"></i> <!-- أيقونة الصوت -->
+  </button>
+
+  <div class="flex items-center justify-center h-full">
+    <div class="content-box text-center relative">
+      <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <img alt="Profile picture" class="rounded-full border-4 border-red-500" height="100" src="57d43714-1b75-4b1a-ac5a-67ad0ccf8929.png" width="100"/>
+      </div>
+
+      <!-- إضافة أيقونات التواصل الاجتماعي مع الأسطوانات -->
+      <div class="icon-cylinder-container">
+        <a class="icon icon-instagram" href="https://www.instagram.com/wadei.shatnawi" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a class="cylinder" href="https://www.instagram.com/wadei.shatnawi" target="_blank">
+          <span class="cylinder-text">wadei.shatnawi</span>
+        </a>
+      </div>
+      <div class="icon-cylinder-container">
+        <a class="icon icon-discord" href="https://discord.com/channels/@me" target="_blank">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a class="cylinder" href="https://discord.com/channels/@me" target="_blank">
+          <span class="cylinder-text">wade3</span>
+        </a>
+      </div>
+      <div class="icon-cylinder-container">
+        <a class="icon icon-youtube" href="https://www.youtube.com/@PCOPTMIZE.1" target="_blank">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a class="cylinder" href="https://www.youtube.com/@PCOPTMIZE.1" target="_blank">
+          <span class="cylinder-text">PC OPTMIZE</span>
+        </a>
+      </div>
+      
+
+  <script>
+    const audio = document.getElementById('backgroundAudio');
+    const video = document.getElementById('backgroundVideo');
+    const popup = document.getElementById('popup');
+    const playSound = document.getElementById('playSound');
+    const muteButton = document.getElementById('muteButton');
+
+    // إظهار النافذة المنبثقة عند تحميل الصفحة
+    window.onload = () => {
+      popup.style.display = 'flex'; // إظهار القائمة المنبثقة
+    };
+
+    // تشغيل الفيديو والصوت عند النقر على الزر
+    playSound.addEventListener('click', () => {
+      video.style.opacity = 0; // تلاشي الفيديو
+      setTimeout(() => {
+        video.play(); // تشغيل الفيديو بعد التلاشي
+        audio.play(); // تشغيل الصوت
+        video.style.opacity = 1; // إعادة الفيديو إلى حالته الأصلية
+      }, 500); // نفس مدة التلاشي
+
+      // إخفاء النافذة المنبثقة تدريجياً
+      popup.classList.add('hidden');
+      setTimeout(() => {
+        popup.style.display = 'none'; // إخفاء العنصر بعد التلاشي
+      }, 500); // نفس مدة التلاشي
+    });
+
+    // إيقاف الصوت عند الضغط على الزر
+    muteButton.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        muteButton.innerHTML = '<i class="fas fa-volume-up"></i>'; // تغيير الأيقونة إلى الصوت
+      } else {
+        audio.pause();
+        muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>'; // تغيير الأيقونة إلى إيقاف الصوت
+      }
+    });
+
+
+// إعادة تشغيل الفيديو تلقائيًا بعد الانتهاء
+video.addEventListener('ended', () => {
+  video.currentTime = 0; // إعادة توقيت الفيديو إلى البداية
+  video.play(); // تشغيل الفيديو مرة أخرى
+});
+  </script>
+</body>
+</html>
